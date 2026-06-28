@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="description" content="StudyFlow Pro - تطبيق إدارة دراسة ذكي متكامل">
+    <title>StudyFlow Ultra v5.2 - Complete Edition</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Inter:wght@400;600;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --font-system: 'Cairo', sans-serif;
+            --font-size-base: 14px;
+            --bg-primary: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-main: #2563eb;
+            --accent-secondary: #38bdf8;
+            --toast-success: #10b981;
+            --toast-error: #ef4444;
+        }
+
+        [data-app-theme="light"] { --bg-primary: #f8fafc; --bg-card: #ffffff; --text-main: #0f172a; --text-muted: #64748b; --border-color: #e2e8f0; }
+        [data-app-theme="dark"] { --bg-primary: #0f172a; --bg-card: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8; --border-color: #334155; }
+        [data-app-theme="amoled"] { --bg-primary: #000000; --bg-card: #0b0b0c; --text-main: #ffffff; --text-muted: #8e8e93; --border-color: #1c1c1e; }
+        [data-app-theme="blue"] { --bg-primary: #0f172a; --bg-card: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8; --border-color: #334155; --accent-main: #2563eb; --accent-secondary: #06b6d4; }
+        [data-app-theme="purple"] { --bg-primary: #120b24; --bg-card: #1d1238; --text-main: #f5f3ff; --text-muted: #a78bfa; --border-color: #34225e; --accent-main: #7c3aed; --accent-secondary: #c026d3; }
+        [data-app-theme="emerald"] { --bg-primary: #022c22; --bg-card: #064e3b; --text-main: #f0fdf4; --text-muted: #6ee7b7; --border-color: #0f766e; --accent-main: #10b981; --accent-secondary: #22c55e; }
+        [data-app-theme="crimson"] { --bg-primary: #1c050a; --bg-card: #2d0911; --text-main: #fff5f5; --text-muted: #fca5a5; --border-color: #4c111e; --accent-main: #dc2626; --accent-secondary: #f43f5e; }
+        [data-app-theme="sunset"] { --bg-primary: #1c0d02; --bg-card: #2c1604; --text-main: #fff7ed; --text-muted: #fdba74; --border-color: #4a2406; --accent-main: #ea580c; --accent-secondary: #eab308; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-system); }
+        body { background-color: var(--bg-primary); color: var(--text-main); height: 100vh; overflow: hidden; font-size: var(--font-size-base); }
+
+        .app-wrapper { display: flex; flex-direction: column; height: 100vh; }
+        header { background: var(--bg-card); padding: 14px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .header-user-zone { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .nav-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-main); cursor: pointer; }
+
+        .main-container { flex: 1; padding: 16px; overflow-y: auto; padding-bottom: 100px; }
+        .page-section { display: none; animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+        .page-section.active { display: block; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; margin-bottom: 12px; }
+        .grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .progress-bar-container { width: 100%; background: var(--border-color); height: 8px; border-radius: 6px; overflow: hidden; margin-top: 8px; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-main), var(--accent-secondary)); transition: width 0.6s ease; }
+
+        .btn { background: var(--accent-main); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; justify-content: center; font-size: 13px; transition: all 0.2s; }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-secondary { background: var(--border-color); color: var(--text-main); }
+        .btn-danger { background: var(--toast-error); }
+        .btn-sm { padding: 6px 10px; font-size: 11px; }
+        .btn.active { background: var(--accent-main); }
+        .btn:not(.active).tab-btn { background: var(--border-color); }
+
+        .input-field { width: 100%; height: 48px; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 12px; padding: 0 14px; outline: none; margin-bottom: 12px; font-size: 14px; }
+        .input-field:focus { border-color: var(--accent-main); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .input-field:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 72px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 900; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--text-muted); cursor: pointer; font-weight: 600; flex: 1; }
+        .nav-item i { font-size: 18px; margin-bottom: 4px; }
+        .nav-item.active { color: var(--accent-main); }
+        
+        .fab { position: fixed; bottom: 88px; left: 20px; width: 56px; height: 56px; background: linear-gradient(135deg, var(--accent-main), var(--accent-secondary)); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; border: none; box-shadow: 0 4px 14px rgba(37,99,235,0.4); z-index: 899; cursor: pointer; }
+
+        .modal-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-card); border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 24px; z-index: 1001; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); max-height: 85vh; overflow-y: auto; }
+        .modal-blur.active { display: block; opacity: 1; }
+        .modal-blur.active .bottom-sheet { transform: translateY(0); }
+
+        .toast-box { position: fixed; top: 20px; left: 20px; right: 20px; z-index: 9999; pointer-events: none; }
+        .toast { padding: 14px 18px; border-radius: 12px; color: white; margin-bottom: 8px; font-weight: 700; text-align: center; opacity: 0; transition: opacity 0.3s; }
+
+        .profile-card { text-align: center; padding: 24px 16px; border-radius: 24px; background: linear-gradient(185deg, var(--bg-card), var(--bg-primary)); border: 1px solid var(--border-color); }
+        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-main); margin: 0 auto 12px; cursor: pointer; }
+
+        .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .badge-box { background: var(--bg-primary); border: 1px solid var(--border-color); padding: 10px 6px; border-radius: 12px; text-align: center; opacity: 0.35; }
+        .badge-box.unlocked { opacity: 1; border-color: var(--accent-secondary); }
+
+        .resource-card { background: var(--bg-primary); border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .resource-info { flex: 1; text-align: right; margin-right: 10px; }
+        .resource-info a { color: var(--accent-main); text-decoration: none; font-weight: 600; }
+
+        .lesson-item { background: var(--bg-primary); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+
+        .difficulty-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+        .difficulty-easy { background: rgba(16, 185, 129, 0.2); color: var(--toast-success); }
+        .difficulty-medium { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .difficulty-hard { background: rgba(239, 68, 68, 0.2); color: var(--toast-error); }
+
+        /* Login Screen Styles */
+        #loginScreen { position: fixed; inset: 0; background: var(--bg-primary); display: flex; justify-content: center; align-items: center; z-index: 99999; overflow-y: auto; }
+        .login-container { display: flex; flex-direction: column; gap: 20px; width: 95%; max-width: 380px; padding: 20px 0; }
+        .login-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 32px 24px; border-radius: 24px; text-align: center; }
+        .login-card h1 { font-size: 28px; margin-bottom: 8px; background: linear-gradient(135deg, var(--accent-main), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .login-step { display: none; }
+        .login-step.active { display: block; animation: slideUp 0.35s ease-out; }
+
+        .step-indicator { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .step-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-color); transition: all 0.3s; }
+        .step-dot.active { background: var(--accent-main); width: 28px; border-radius: 6px; }
+
+        .form-group { margin-bottom: 16px; text-align: right; }
+        .form-group label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 8px; color: var(--text-muted); }
+        .form-group select, .form-group input { width: 100%; }
+
+        .grade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .grade-btn { background: var(--bg-primary); border: 2px solid var(--border-color); padding: 12px; border-radius: 12px; color: var(--text-main); font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .grade-btn:hover { border-color: var(--accent-main); }
+        .grade-btn.selected { background: var(--accent-main); border-color: var(--accent-main); }
+
+        .login-actions { display: flex; gap: 8px; margin-top: 20px; }
+        .login-actions button { flex: 1; }
+    </style>
+</head>
+<body data-app-theme="dark">
+
+    <!-- شاشة تسجيل الدخول المحسّنة -->
+    <div id="loginScreen">
+        <div class="login-container">
+            <!-- الخطوة 1: الاسم -->
+            <div id="loginStep1" class="login-step active">
+                <div class="login-card">
+                    <h1>📚 StudyFlow Pro</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">v5.2 - النسخة الكاملة المحسّنة</p>
+                    <div class="step-indicator">
+                        <div class="step-dot active"></div>
+                        <div class="step-dot"></div>
+                        <div class="step-dot"></div>
+                    </div>
+                    <input id="loginName" class="input-field" placeholder="اسمك الكامل...">
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 12px;">بداية جديدة لمستقبل أفضل 🎓</p>
+                    <button class="btn" style="width:100%; height: 48px; margin-top: 20px;" onclick="Auth.nextStep(1)">التالي ➜</button>
+                </div>
+            </div>
+
+            <!-- الخطوة 2: اختيار المرحلة -->
+            <div id="loginStep2" class="login-step">
+                <div class="login-card">
+                    <h1>📖 المرحلة الدراسية</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">اختر مرحلتك الدراسية</p>
+                    <div class="step-indicator">
+                        <div class="step-dot active"></div>
+                        <div class="step-dot active"></div>
+                        <div class="step-dot"></div>
+                    </div>
+                    <div class="grade-grid">
+                        <button class="grade-btn" onclick="Auth.selectStage('ابتدائي', this)">🎈 ابتدائي</button>
+                        <button class="grade-btn" onclick="Auth.selectStage('إعدادي', this)">📚 إعدادي</button>
+                        <button class="grade-btn" onclick="Auth.selectStage('ثانوي', this)">🎯 ثانوي</button>
+                        <button class="grade-btn" onclick="Auth.selectStage('جامعة', this)">🎓 جامعة</button>
+                    </div>
+                    <div class="login-actions">
+                        <button class="btn btn-secondary" style="height: 48px;" onclick="Auth.prevStep()">➜ السابق</button>
+                        <button class="btn" style="height: 48px;" onclick="Auth.nextStep(2)">التالي ➜</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الخطوة 3: اختيار الصف -->
+            <div id="loginStep3" class="login-step">
+                <div class="login-card">
+                    <h1>🎓 اختر صفك</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">حدد السنة الدراسية</p>
+                    <div class="step-indicator">
+                        <div class="step-dot active"></div>
+                        <div class="step-dot active"></div>
+                        <div class="step-dot active"></div>
+                    </div>
+                    <div class="grade-grid" id="gradeGrid"></div>
+                    <div class="login-actions">
+                        <button class="btn btn-secondary" style="height: 48px;" onclick="Auth.prevStep()">➜ السابق</button>
+                        <button class="btn" style="height: 48px;" onclick="Auth.completeLogin()">دخول 🚀</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-box" id="toastBox"></div>
+
+    <div class="app-wrapper" id="appMainWrapper" style="display:none;">
+        <header>
+            <div class="header-user-zone" onclick="AppEvents.emit('nav:profile')">
+                <img id="headerAvatar" src="" class="nav-avatar" alt="Avatar" title="انقر لتعديل الصورة">
+                <h2 style="font-size:16px; font-weight:700;" id="userGreetingTitle">الطالب</h2>
+            </div>
+            <div class="header-stats" style="display: flex; gap: 12px;">
+                <div style="color:var(--accent-secondary)">⚡ <span id="headerLVL">LVL 1</span></div>
+                <div style="color:#f97316;">🔥 <span id="headerStreak">0</span></div>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <!-- لوحة التحكم -->
+            <div id="sec-today" class="page-section active">
+                <div class="card" style="background: linear-gradient(135deg, var(--accent-main), var(--accent-secondary)); color: white; border: none;">
+                    <h3>📊 لوحة التحكم</h3>
+                    <p style="font-size:12px; opacity:0.9; margin: 4px 0 14px;">ملخص يومك والإحصائيات الحية</p>
+                </div>
+                <div id="dashboardStats"></div>
+                <button class="btn" style="width: 100%; height: 44px; margin: 12px 0;" onclick="AppEvents.emit('schedule:generate')">⚡ احسب جدول اليوم</button>
+                <div id="aiScheduleContainer"></div>
+            </div>
+
+            <!-- المواد -->
+            <div id="sec-subjects" class="page-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <h3>📚 المواد الدراسية</h3>
+                    <button class="btn btn-sm" onclick="AppEvents.emit('subject:add')">➕</button>
+                </div>
+                <input type="text" id="subjectSearchInput" class="input-field" placeholder="🔍 ابحث..." oninput="AppEvents.emit('subject:search', {term: this.value})">
+                <div id="subjectsContainer"></div>
+            </div>
+
+            <!-- المهام -->
+            <div id="sec-tasks" class="page-section">
+                <div style="display:flex; gap:8px; margin-bottom:12px;">
+                    <input type="text" id="taskSearchInput" class="input-field" placeholder="🔍 ابحث..." oninput="AppEvents.emit('task:search', {term: this.value})" style="flex:1; margin:0;">
+                    <select id="taskFilterSelect" class="input-field" onchange="AppEvents.emit('task:filter', {status: this.value})" style="flex:0.5; margin:0;">
+                        <option value="">الكل</option>
+                        <option value="pending">قيد</option>
+                        <option value="done">منجز</option>
+                    </select>
+                </div>
+                <div id="tasksContainer"></div>
+            </div>
+
+            <!-- المؤقت -->
+            <div id="sec-timer" class="page-section">
+                <div class="card" style="text-align:center;">
+                    <label style="font-size:12px; color:var(--text-muted); font-weight:700;">اختر المادة</label>
+                    <select id="timerSubjectSelect" class="input-field" style="margin-top:0;"></select>
+                    <div class="timer-display" id="timerDisplay" style="font-size: 56px; font-weight: 700; color: var(--accent-main); margin: 20px 0;">25:00</div>
+                    <button class="btn" id="timerActionBtn" style="width:100%; height:48px;" onclick="AppEvents.emit('timer:toggle')">ابدأ الجلسة</button>
+                    <p style="font-size:12px; color:var(--text-muted); margin-top:12px;">جلسات: <strong id="sessionsCount">0</strong></p>
+                </div>
+            </div>
+
+            <!-- الملف الشخصي -->
+            <div id="sec-profile" class="page-section">
+                <div class="profile-card">
+                    <img id="profileCardAvatar" src="" class="profile-avatar" alt="Avatar" onclick="AppEvents.emit('profile:changeAvatar')" title="انقر لتغيير الصورة">
+                    <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="AppEvents.emit('profile:updateAvatar', {event: event})">
+                    <h2 id="profileCardName" style="font-weight: 700;">الطالب</h2>
+                    <p id="profileCardStage" style="color: var(--text-muted); font-size: 12px;">المرحلة الدراسية</p>
+                    <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-top:12px; margin-bottom:8px;">
+                        <span id="profileCardLevel">Level 1</span>
+                        <span id="profileCardXpText">0 / 100 XP</span>
+                    </div>
+                    <div class="progress-bar-container"><div class="progress-bar-fill" id="profileCardXpFill"></div></div>
+                </div>
+
+                <div class="grid-2x2" style="margin-top:12px;" id="profileStatsMatrix"></div>
+
+                <h3 style="margin: 20px 0 12px;">🏆 الإنجازات</h3>
+                <div class="badge-grid" id="expandedBadgesContainer"></div>
+
+                <h3 style="margin: 24px 0 12px;">⚙️ الإعدادات</h3>
+                <div class="card">
+                    <div style="margin-bottom: 16px;">
+                        <span style="font-weight: 700; display: block; margin-bottom: 6px; font-size: 13px;">🎨 الثيم</span>
+                        <select id="settingThemeSelect" class="input-field" style="margin:0;" onchange="AppEvents.emit('theme:change', {theme: this.value})">
+                            <option value="dark">🌙 Dark</option>
+                            <option value="light">☀️ Light</option>
+                            <option value="amoled">⚫ AMOLED</option>
+                            <option value="blue">💙 Blue</option>
+                            <option value="purple">💜 Purple</option>
+                            <option value="emerald">🟢 Emerald</option>
+                            <option value="crimson">🟥 Red</option>
+                            <option value="sunset">🌅 Sunset</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <span style="font-weight: 700; display: block; margin-bottom: 6px; font-size: 13px;">✏️ البيانات الشخصية</span>
+                        <input type="text" id="settingNameInput" class="input-field" style="margin:0; margin-bottom: 8px;" placeholder="الاسم...">
+                        <select id="settingStageSelect" class="input-field" style="margin:0; margin-bottom: 8px;" onchange="AppEvents.emit('profile:syncGrades', {stage: this.value})">
+                            <option value="ابتدائي">ابتدائي</option>
+                            <option value="إعدادي">إعدادي</option>
+                            <option value="ثانوي">ثانوي</option>
+                            <option value="جامعة">جامعة</option>
+                        </select>
+                        <select id="settingGradeSelect" class="input-field" style="margin:0;"></select>
+                    </div>
+
+                    <button class="btn" style="width:100%; height:44px; margin-bottom:12px;" onclick="AppEvents.emit('profile:save')">💾 حفظ البيانات</button>
+                    <button class="btn btn-secondary" style="width:100%; height:44px; margin-bottom:12px;" onclick="AppEvents.emit('data:export')">📥 نسخة احتياطية</button>
+                    <button class="btn btn-danger" style="width:100%; height:44px; margin-bottom:12px;" onclick="AppEvents.emit('auth:logout')">🚪 تسجيل خروج</button>
+                    <button class="btn btn-secondary" style="width:100%; height:44px;" onclick="AppEvents.emit('app:restart')">🔄 إعادة تشغيل</button>
+                </div>
+            </div>
+        </div>
+
+        <button class="fab" onclick="AppEvents.emit('task:openModal')">➕</button>
+
+        <div class="nav-bar">
+            <div class="nav-item active" onclick="AppEvents.emit('nav:today', this)"><i class="fa-solid fa-house"></i><span>اليوم</span></div>
+            <div class="nav-item" onclick="AppEvents.emit('nav:subjects', this)"><i class="fa-solid fa-book"></i><span>المواد</span></div>
+            <div class="nav-item" onclick="AppEvents.emit('nav:tasks', this)"><i class="fa-solid fa-list-check"></i><span>المهام</span></div>
+            <div class="nav-item" onclick="AppEvents.emit('nav:timer', this)"><i class="fa-solid fa-stopwatch"></i><span>المؤقت</span></div>
+            <div class="nav-item" onclick="AppEvents.emit('nav:profile', this)"><i class="fa-solid fa-user"></i><span>الملف</span></div>
+        </div>
+    </div>
+
+    <!-- مودال المهام -->
+    <div class="modal-blur" id="taskModal" onclick="AppEvents.emit('modal:close', {modalId: 'taskModal'})">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <h3>➕ مهمة جديدة</h3>
+            <input type="text" id="newTaskInput" class="input-field" placeholder="نص المهمة..." onkeypress="if(event.key==='Enter') AppEvents.emit('task:create')">
+            <select id="newTaskPriority" class="input-field">
+                <option value="low">🟢 منخفضة</option>
+                <option value="medium">🟡 متوسطة</option>
+                <option value="high">🔴 عالية</option>
+            </select>
+            <input type="date" id="newTaskDueDate" class="input-field">
+            <button class="btn" style="width:100%; height:48px;" onclick="AppEvents.emit('task:create')">حفظ</button>
+        </div>
+    </div>
+
+    <!-- مودال المادة -->
+    <div class="modal-blur" id="subjectModal" onclick="AppEvents.emit('modal:close', {modalId: 'subjectModal'})">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <h3>📚 مادة جديدة</h3>
+            <input type="text" id="newSubjectInput" class="input-field" placeholder="اسم المادة..." onkeypress="if(event.key==='Enter') AppEvents.emit('subject:create')">
+            <select id="newSubjectDifficulty" class="input-field">
+                <option value="easy">🟢 سهلة</option>
+                <option value="medium">🟡 متوسطة</option>
+                <option value="hard">🔴 صعبة</option>
+            </select>
+            <input type="date" id="newSubjectExamDate" class="input-field">
+            <button class="btn" style="width:100%; height:48px;" onclick="AppEvents.emit('subject:create')">حفظ</button>
+        </div>
+    </div>
+
+    <!-- مودال تفاصيل المادة -->
+    <div class="modal-blur" id="subjectDetailModal" onclick="AppEvents.emit('modal:close', {modalId: 'subjectDetailModal'})">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 id="subjectDetailTitle" style="margin: 0;">تفاصيل المادة</h3>
+                <button class="btn btn-sm" onclick="AppEvents.emit('modal:close', {modalId: 'subjectDetailModal'})">✕</button>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">
+                <button class="btn btn-sm active tab-btn" id="tabLessonsBtn" onclick="SubjectDetail.switchTab('lessons')">📖 الدروس</button>
+                <button class="btn btn-sm tab-btn" id="tabResourcesBtn" onclick="SubjectDetail.switchTab('resources')">📎 المحتوى</button>
+            </div>
+
+            <!-- الدروس -->
+            <div id="lessonsTab">
+                <div id="lessonsList" style="margin-bottom: 16px;"></div>
+                <input type="text" id="newLessonInput" class="input-field" placeholder="اسم درس جديد..." onkeypress="if(event.key==='Enter') AppEvents.emit('lesson:create')">
+                <button class="btn" style="width:100%; height:48px;" onclick="AppEvents.emit('lesson:create')">➕ إضافة درس</button>
+            </div>
+
+            <!-- المحتوى -->
+            <div id="resourcesTab" style="display: none;">
+                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <select id="resourceType" class="input-field" style="flex: 1; margin: 0;">
+                        <option value="book">📘 كتاب PDF</option>
+                        <option value="video">🎥 فيديو YouTube</option>
+                        <option value="notes">📝 ملزمة</option>
+                    </select>
+                </div>
+                <input type="text" id="resourceTitle" class="input-field" placeholder="عنوان المحتوى...">
+                <input type="url" id="resourceUrl" class="input-field" placeholder="الرابط (URL)..." onkeypress="if(event.key==='Enter') AppEvents.emit('resource:create')">
+                <button class="btn" style="width:100%; height:48px;" onclick="AppEvents.emit('resource:create')">➕ إضافة محتوى</button>
+                <div id="resourcesList" style="margin-top: 16px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== نظام الأحداث المحسّن =====
+        const AppEvents = {
+            listeners: new Map(),
+            
+            on(event, callback) {
+                if (!this.listeners.has(event)) {
+                    this.listeners.set(event, []);
+                }
+                this.listeners.get(event).push(callback);
+            },
+
+            emit(event, data = {}) {
+                if (this.listeners.has(event)) {
+                    this.listeners.get(event).forEach(callback => {
+                        try {
+                            callback(data);
+                        } catch (e) {
+                            console.error(`خطأ في الحدث ${event}:`, e);
+                        }
+                    });
+                }
+            },
+
+            once(event, callback) {
+                const wrapper = (data) => {
+                    callback(data);
+                    this.listeners.get(event).splice(this.listeners.get(event).indexOf(wrapper), 1);
+                };
+                this.on(event, wrapper);
+            }
+        };
+
+        const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%232563eb'/><path d='M50 20a15 15 0 100 30 15 15 0 000-30zM20 80c0-15 15-20 30-20s30 5 30 20v5H20v-5z' fill='white'/></svg>";
+        const POMODORO_DURATION = 25;
+
+        // ===== نظام التخزين =====
+        const Storage = {
+            get() {
+                try {
+                    let d = localStorage.getItem('sf_ultra_v52_data');
+                    return d ? JSON.parse(d) : this.getDefaults();
+                } catch(e) {
+                    return this.getDefaults();
+                }
+            },
+            
+            getDefaults() {
+                return {
+                    student: { name: "الطالب", stage: "ثانوي", grade: "الصف الأول الثانوي", avatar: DEFAULT_AVATAR },
+                    subjects: [],
+                    tasks: [],
+                    totalMinutesStudied: 0,
+                    streak: 0,
+                    xp: 0,
+                    level: 1,
+                    lastLoginDate: null,
+                    completedSessions: 0,
+                    dailyStudyTime: 0,
+                    lastDailyReset: new Date().toISOString().split('T')[0]
+                };
+            },
+
+            set(d) {
+                try {
+                    localStorage.setItem('sf_ultra_v52_data', JSON.stringify(d));
+                } catch(e) {
+                    console.error('خطأ في الحفظ:', e);
+                }
+            },
+
+            exportData() {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.get()));
+                const a = document.createElement('a');
+                a.href = dataStr;
+                a.download = `studyflow_${new Date().toISOString().slice(0,10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                Toaster.show('تم التحميل! 📥');
+            }
+        };
+
+        // ===== نظام التطبيق الرئيسي =====
+        const App = {
+            data: null,
+            autoSaveTimeout: null,
+            initialized: false,
+
+            init() {
+                this.data = Storage.get();
+                this.data.subjects = this.data.subjects || [];
+                this.data.tasks = this.data.tasks || [];
+                this.setupEventListeners();
+                this.checkDailyReset();
+            },
+
+            checkDailyReset() {
+                const today = new Date().toISOString().split('T')[0];
+                if (this.data.lastDailyReset !== today) {
+                    this.data.dailyStudyTime = 0;
+                    this.data.lastDailyReset = today;
+                    this.save(true);
+                }
+            },
+
+            save(immediate = false) {
+                clearTimeout(this.autoSaveTimeout);
+                const doSave = () => Storage.set(this.data);
+                if (immediate) doSave();
+                else this.autoSaveTimeout = setTimeout(doSave, 1000);
+            },
+
+            setupEventListeners() {
+                // التنقل
+                AppEvents.on('nav:today', (data) => this.switchTab('today', data));
+                AppEvents.on('nav:subjects', (data) => this.switchTab('subjects', data));
+                AppEvents.on('nav:tasks', (data) => this.switchTab('tasks', data));
+                AppEvents.on('nav:timer', (data) => this.switchTab('timer', data));
+                AppEvents.on('nav:profile', (data) => this.switchTab('profile', data));
+
+                // المصادقة
+                AppEvents.on('auth:logout', () => Auth.logout());
+                AppEvents.on('app:restart', () => Auth.restart());
+
+                // المهام
+                AppEvents.on('task:openModal', () => this.openModal('taskModal'));
+                AppEvents.on('task:create', () => Tasks.create());
+                AppEvents.on('task:search', (data) => Tasks.render(data.term));
+                AppEvents.on('task:filter', (data) => Tasks.render(null, data.status));
+                AppEvents.on('task:toggle', (data) => Tasks.toggle(data.id));
+                AppEvents.on('task:delete', (data) => Tasks.delete(data.id));
+
+                // المواد
+                AppEvents.on('subject:add', () => this.openModal('subjectModal'));
+                AppEvents.on('subject:create', () => Subjects.create());
+                AppEvents.on('subject:search', (data) => Subjects.render(data.term));
+                AppEvents.on('subject:openDetail', (data) => SubjectDetail.open(data.subjectId));
+                AppEvents.on('subject:delete', (data) => Subjects.delete(data.id));
+
+                // الدروس
+                AppEvents.on('lesson:create', () => Lessons.create());
+                AppEvents.on('lesson:delete', (data) => Lessons.delete(data.subjectId, data.index));
+
+                // المحتوى
+                AppEvents.on('resource:create', () => Resources.create());
+                AppEvents.on('resource:delete', (data) => Resources.delete(data.subjectId, data.index));
+
+                // الجدول
+                AppEvents.on('schedule:generate', () => AIPlanner.generate());
+
+                // المؤقت
+                AppEvents.on('timer:toggle', () => Timer.toggle());
+
+                // الثيم
+                AppEvents.on('theme:change', (data) => Theme.set(data.theme));
+
+                // البيانات
+                AppEvents.on('data:export', () => Storage.exportData());
+
+                // الملف الشخصي
+                AppEvents.on('profile:save', () => User.save());
+                AppEvents.on('profile:changeAvatar', () => document.getElementById('avatarInput').click());
+                AppEvents.on('profile:updateAvatar', (data) => User.updateAvatar(data.event));
+                AppEvents.on('profile:syncGrades', (data) => User.syncGradeOptions(data.stage));
+
+                // المودالات
+                AppEvents.on('modal:close', (data) => this.closeModal(data.modalId));
+            },
+
+            switchTab(target, el) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                if (el) el.classList.add('active');
+                document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`sec-${target}`)?.classList.add('active');
+            },
+
+            openModal(id) {
+                document.getElementById(id)?.classList.add('active');
+                this.closeModalOnEscape(id);
+            },
+
+            closeModal(id) {
+                document.getElementById(id)?.classList.remove('active');
+            },
+
+            closeModalOnEscape(id) {
+                const handleEscape = (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeModal(id);
+                        document.removeEventListener('keydown', handleEscape);
+                    }
+                };
+                document.addEventListener('keydown', handleEscape);
+            }
+        };
+
+        // ===== نظام الإشعارات =====
+        const Toaster = {
+            show(msg, type = 'success') {
+                const box = document.getElementById('toastBox');
+                const t = document.createElement('div');
+                t.className = 'toast';
+                t.style.backgroundColor = type === 'success' ? 'var(--toast-success)' : type === 'error' ? 'var(--toast-error)' : 'var(--accent-main)';
+                t.textContent = msg;
+                box.appendChild(t);
+                setTimeout(() => t.style.opacity = '1', 10);
+                setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
+            }
+        };
+
+        // ===== نظام الثيم =====
+        const Theme = {
+            init() {
+                const theme = localStorage.getItem('sf_u_theme') || 'dark';
+                document.body.setAttribute('data-app-theme', theme);
+                if(document.getElementById('settingThemeSelect')) document.getElementById('settingThemeSelect').value = theme;
+            },
+            set(themeName) {
+                document.body.setAttribute('data-app-theme', themeName);
+                localStorage.setItem('sf_u_theme', themeName);
+                Toaster.show('تم تطبيق الثيم! ✨');
+            }
+        };
+
+        // ===== نظام المصادقة المحسّن =====
+        const Auth = {
+            currentStep: 1,
+            tempData: { name: '', stage: '', grade: '' },
+
+            nextStep(step) {
+                if (step === 1) {
+                    const name = document.getElementById('loginName').value.trim();
+                    if (!name) { Toaster.show("أدخل اسمك!", 'error'); return; }
+                    this.tempData.name = name;
+                    this.goToStep(2);
+                } else if (step === 2) {
+                    if (!this.tempData.stage) { Toaster.show("اختر مرحلة!", 'error'); return; }
+                    this.goToStep(3);
+                }
+            },
+
+            prevStep() {
+                if (this.currentStep > 1) this.goToStep(this.currentStep - 1);
+            },
+
+            goToStep(step) {
+                document.querySelectorAll('.login-step').forEach(s => s.classList.remove('active'));
+                document.getElementById(`loginStep${step}`).classList.add('active');
+                this.currentStep = step;
+                
+                if (step === 3) {
+                    this.renderGradeOptions();
+                }
+            },
+
+            selectStage(stage, el) {
+                document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+                el.classList.add('selected');
+                this.tempData.stage = stage;
+            },
+
+            renderGradeOptions() {
+                const grades = {
+                    'ابتدائي': ['الرابع', 'الخامس', 'السادس'],
+                    'إعدادي': ['الأول', 'الثاني', 'الثالث'],
+                    'ثانوي': ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي'],
+                    'جامعة': ['السنة الأولى', 'السنة الثانية', 'السنة الثالثة', 'السنة الرابعة']
+                };
+
+                const gradeGrid = document.getElementById('gradeGrid');
+                gradeGrid.innerHTML = '';
+                const gradeList = grades[this.tempData.stage] || [];
+                
+                const fragment = document.createDocumentFragment();
+                gradeList.forEach(grade => {
+                    const btn = document.createElement('button');
+                    btn.className = 'grade-btn';
+                    btn.textContent = grade;
+                    btn.onclick = () => {
+                        document.querySelectorAll('#gradeGrid .grade-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                        this.tempData.grade = grade;
+                    };
+                    fragment.appendChild(btn);
+                });
+                gradeGrid.appendChild(fragment);
+            },
+
+            completeLogin() {
+                if (!this.tempData.grade) { Toaster.show("اختر صفك!", 'error'); return; }
+                
+                App.data = Storage.getDefaults();
+                App.data.student.name = this.tempData.name;
+                App.data.student.stage = this.tempData.stage;
+                App.data.student.grade = this.tempData.grade;
+                App.data.lastLoginDate = new Date().toISOString().split('T')[0];
+                
+                Storage.set(App.data);
+                
+                document.getElementById("loginScreen").style.display = "none";
+                document.getElementById("appMainWrapper").style.display = "flex";
+                
+                App.initialized = false;
+                UI.init();
+                Toaster.show(`أهلاً ${this.tempData.name}! 👋`);
+            },
+
+            logout() {
+                this.currentStep = 1;
+                this.tempData = { name: '', stage: '', grade: '' };
+                document.getElementById("appMainWrapper").style.display = "none";
+                document.getElementById("loginScreen").style.display = "flex";
+                document.getElementById("loginName").value = "";
+                document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
+                document.querySelectorAll('.login-step').forEach(s => s.classList.remove('active'));
+                document.getElementById('loginStep1').classList.add('active');
+                Toaster.show("تم تسجيل الخروج 🚪");
+            },
+
+            restart() {
+                if (!confirm("⚠️ سيتم حذف كل البيانات! هل أنت متأكد؟")) return;
+                localStorage.clear();
+                location.reload();
+            },
+
+            check() {
+                const data = Storage.get();
+                if(data.student.name && data.student.name !== "الطالب") {
+                    App.data = data;
+                    document.getElementById("loginScreen").style.display = "none";
+                    document.getElementById("appMainWrapper").style.display = "flex";
+                }
+            }
+        };
+
+        // ===== نظام المهام =====
+        const Tasks = {
+            searchTerm: '',
+            filterStatus: '',
+
+            render(searchTerm, filterStatus) {
+                this.searchTerm = searchTerm || this.searchTerm || '';
+                this.filterStatus = filterStatus || this.filterStatus || '';
+
+                const container = document.getElementById('tasksContainer');
+                let filtered = App.data.tasks.filter(t => 
+                    t.text.toLowerCase().includes(this.searchTerm.toLowerCase())
+                );
+                
+                if (this.filterStatus === 'done') filtered = filtered.filter(t => t.done);
+                else if (this.filterStatus === 'pending') filtered = filtered.filter(t => !t.done);
+
+                container.innerHTML = filtered.length === 0 ? '<div class="card" style="text-align:center; padding:20px; color:var(--text-muted);">✅ لا توجد مهام</div>' : '';
+                
+                filtered.sort((a, b) => {
+                    const priorityOrder = { high: 0, medium: 1, low: 2 };
+                    return priorityOrder[a.priority || 'low'] - priorityOrder[b.priority || 'low'];
+                });
+
+                const fragment = document.createDocumentFragment();
+                filtered.forEach(t => {
+                    const priorityEmoji = { high: '🔴', medium: '🟡', low: '🟢' }[t.priority || 'low'];
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    div.style.borderLeft = t.done ? '4px solid var(--toast-success)' : '4px solid var(--accent-main)';
+                    div.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="AppEvents.emit('task:toggle', {id: ${t.id}})">
+                            <span style="opacity: ${t.done ? 0.6 : 1}; text-decoration: ${t.done ? 'line-through' : 'none'}; flex:1;">${t.text}</span>
+                            <button class="btn btn-danger btn-sm" onclick="AppEvents.emit('task:delete', {id: ${t.id}})">🗑️</button>
+                        </div>
+                        <p style="font-size:11px; color:var(--text-muted); margin-top:6px;">${priorityEmoji} | 📅 ${t.dueDate || 'بدون موعد'}</p>
+                    `;
+                    fragment.appendChild(div);
+                });
+                container.appendChild(fragment);
+            },
+
+            create() {
+                const text = document.getElementById('newTaskInput').value.trim();
+                if(!text) { Toaster.show('أدخل المهمة!', 'error'); return; }
+
+                App.data.tasks.push({
+                    id: Date.now(),
+                    text,
+                    priority: document.getElementById('newTaskPriority').value || 'low',
+                    dueDate: document.getElementById('newTaskDueDate').value,
+                    done: false
+                });
+
+                App.save();
+                document.getElementById('newTaskInput').value = '';
+                document.getElementById('newTaskPriority').value = 'low';
+                App.closeModal('taskModal');
+                this.render();
+                User.calculateGamification();
+                Toaster.show('تم الإضافة! 🎯');
+            },
+
+            toggle(id) {
+                const task = App.data.tasks.find(t => t.id === id);
+                if (task) task.done = !task.done;
+                App.save();
+                this.render();
+                User.calculateGamification();
+            },
+
+            delete(id) {
+                if (!confirm('هل تريد حذف هذه المهمة؟')) return;
+                App.data.tasks = App.data.tasks.filter(t => t.id !== id);
+                App.save();
+                this.render();
+            }
+        };
+
+        // ===== نظام المواد =====
+        const Subjects = {
+            searchTerm: '',
+
+            render(searchTerm) {
+                this.searchTerm = searchTerm || this.searchTerm || '';
+                const container = document.getElementById('subjectsContainer');
+                
+                let filtered = App.data.subjects.filter(s => 
+                    s.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+                );
+                container.innerHTML = filtered.length === 0 ? '<div class="card" style="text-align:center; padding:20px;">📚 لا توجد مواد</div>' : '';
+                
+                const fragment = document.createDocumentFragment();
+                filtered.forEach(sub => {
+                    const diffEmoji = { easy: '🟢', medium: '🟡', hard: '🔴' }[sub.difficulty] || '⚪';
+                    const lessonsCount = (sub.lessons || []).length;
+                    const resourcesCount = (sub.resources || []).length;
+                    
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    div.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 10px;">
+                            <div style="flex:1;">
+                                <div style="display:flex; gap:8px; margin-bottom:4px;">
+                                    <strong>${this.sanitizeText(sub.name)}</strong>
+                                    <span class="difficulty-badge difficulty-${sub.difficulty}">${diffEmoji}</span>
+                                </div>
+                                <p style="font-size:11px; color:var(--text-muted); margin:0;">📚 ${lessonsCount} دروس | 📎 ${resourcesCount} ملفات | 📅 ${sub.examDate || 'بدون'}</p>
+                            </div>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="btn btn-secondary btn-sm" onclick="AppEvents.emit('subject:openDetail', {subjectId: '${sub.id}'})">📖</button>
+                                <button class="btn btn-danger btn-sm" onclick="AppEvents.emit('subject:delete', {id: '${sub.id}'})">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                    fragment.appendChild(div);
+                });
+                container.appendChild(fragment);
+                this.updateTimerSelect();
+            },
+
+            create() {
+                const name = document.getElementById('newSubjectInput').value.trim();
+                if(!name) { Toaster.show('أدخل اسم المادة!', 'error'); return; }
+
+                const id = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString();
+                App.data.subjects.push({
+                    id,
+                    name,
+                    difficulty: document.getElementById('newSubjectDifficulty').value,
+                    examDate: document.getElementById('newSubjectExamDate').value || '2026-06-30',
+                    resources: [],
+                    lessons: [],
+                    minutes: 0
+                });
+
+                App.save();
+                document.getElementById('newSubjectInput').value = '';
+                document.getElementById('newSubjectDifficulty').value = 'medium';
+                App.closeModal('subjectModal');
+                this.render();
+                Toaster.show(`تم إضافة "${name}"! 📚`);
+            },
+
+            delete(id) {
+                if (!confirm('هل تريد حذف هذه المادة؟')) return;
+                App.data.subjects = App.data.subjects.filter(s => s.id !== id);
+                App.save();
+                this.render();
+                Toaster.show('تم الحذف! 🗑️');
+            },
+
+            updateTimerSelect() {
+                const select = document.getElementById('timerSubjectSelect');
+                if (!select) return;
+                select.innerHTML = '<option value="">-- اختر مادة --</option>';
+                App.data.subjects.forEach(sub => {
+                    select.innerHTML += `<option value="${sub.id}">${this.sanitizeText(sub.name)}</option>`;
+                });
+            },
+
+            sanitizeText(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        };
+
+        // ===== نظام تفاصيل المادة =====
+        const SubjectDetail = {
+            currentSubjectId: null,
+            currentTab: 'lessons',
+
+            open(subjectId) {
+                this.currentSubjectId = subjectId;
+                this.currentTab = 'lessons';
+                const subject = App.data.subjects.find(s => s.id === subjectId);
+                if (!subject) return;
+
+                document.getElementById('subjectDetailTitle').textContent = `تفاصيل: ${subject.name}`;
+                this.renderLessons();
+                this.renderResources();
+                this.switchTab('lessons');
+                App.openModal('subjectDetailModal');
+            },
+
+            switchTab(tab) {
+                this.currentTab = tab;
+                document.getElementById('lessonsTab').style.display = tab === 'lessons' ? 'block' : 'none';
+                document.getElementById('resourcesTab').style.display = tab === 'resources' ? 'block' : 'none';
+
+                const btnLessons = document.getElementById('tabLessonsBtn');
+                const btnResources = document.getElementById('tabResourcesBtn');
+                
+                if (tab === 'lessons') {
+                    btnLessons.classList.add('active');
+                    btnResources.classList.remove('active');
+                } else {
+                    btnLessons.classList.remove('active');
+                    btnResources.classList.add('active');
+                }
+            },
+
+            renderLessons() {
+                const subject = App.data.subjects.find(s => s.id === this.currentSubjectId);
+                const container = document.getElementById('lessonsList');
+                if (!subject) return;
+
+                const lessons = subject.lessons || [];
+                container.innerHTML = '';
+
+                if (lessons.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 15px;">لا توجد دروس حتى الآن</p>';
+                    return;
+                }
+
+                const fragment = document.createDocumentFragment();
+                lessons.forEach((lesson, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'lesson-item';
+                    div.innerHTML = `
+                        <button class="btn btn-danger btn-sm" onclick="AppEvents.emit('lesson:delete', {subjectId: '${this.currentSubjectId}', index: ${idx}})">🗑️</button>
+                        <span>📖 ${lesson}</span>
+                    `;
+                    fragment.appendChild(div);
+                });
+                container.appendChild(fragment);
+            },
+
+            renderResources() {
+                const subject = App.data.subjects.find(s => s.id === this.currentSubjectId);
+                const container = document.getElementById('resourcesList');
+                if (!subject) return;
+
+                const resources = subject.resources || [];
+                container.innerHTML = '';
+
+                if (resources.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 15px;">لا يوجد محتوى حتى الآن</p>';
+                    return;
+                }
+
+                const icons = { book: '📘', video: '🎥', notes: '📝' };
+                const fragment = document.createDocumentFragment();
+                resources.forEach((res, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'resource-card';
+                    div.innerHTML = `
+                        <button class="btn btn-danger btn-sm" onclick="AppEvents.emit('resource:delete', {subjectId: '${this.currentSubjectId}', index: ${idx}})">🗑️</button>
+                        <div class="resource-info">
+                            <a href="${res.url}" target="_blank" rel="noopener noreferrer">${icons[res.type] || '📎'} ${res.title}</a>
+                        </div>
+                    `;
+                    fragment.appendChild(div);
+                });
+                container.appendChild(fragment);
+            }
+        };
+
+        // ===== نظام الدروس =====
+        const Lessons = {
+            create() {
+                const lessonName = document.getElementById('newLessonInput').value.trim();
+                if (!lessonName) { Toaster.show('أدخل اسم الدرس!', 'error'); return; }
+
+                const subject = App.data.subjects.find(s => s.id === SubjectDetail.currentSubjectId);
+                if (!subject) return;
+
+                if (!subject.lessons) subject.lessons = [];
+                subject.lessons.push(lessonName);
+
+                App.save();
+                document.getElementById('newLessonInput').value = '';
+                SubjectDetail.renderLessons();
+                Subjects.render();
+                Toaster.show('تم إضافة درس! 📖');
+            },
+
+            delete(subjectId, index) {
+                if (!confirm('هل تريد حذف هذا الدرس؟')) return;
+                const subject = App.data.subjects.find(s => s.id === subjectId);
+                if (subject && subject.lessons) {
+                    subject.lessons.splice(index, 1);
+                    App.save();
+                    SubjectDetail.renderLessons();
+                    Subjects.render();
+                    Toaster.show('تم حذف الدرس! 🗑️');
+                }
+            }
+        };
+
+        // ===== نظام المحتوى =====
+        const Resources = {
+            create() {
+                const type = document.getElementById('resourceType').value;
+                const title = document.getElementById('resourceTitle').value.trim();
+                const url = document.getElementById('resourceUrl').value.trim();
+
+                if (!title || !url) { Toaster.show('ملأ جميع الحقول!', 'error'); return; }
+
+                const subject = App.data.subjects.find(s => s.id === SubjectDetail.currentSubjectId);
+                if (!subject) return;
+
+                if (!subject.resources) subject.resources = [];
+                subject.resources.push({ type, title, url, id: Date.now() });
+
+                App.save();
+                document.getElementById('resourceTitle').value = '';
+                document.getElementById('resourceUrl').value = '';
+                SubjectDetail.renderResources();
+                Subjects.render();
+                Toaster.show('تم إضافة محتوى! ✨');
+            },
+
+            delete(subjectId, index) {
+                if (!confirm('حذف هذا المحتوى؟')) return;
+                const subject = App.data.subjects.find(s => s.id === subjectId);
+                if (subject && subject.resources) {
+                    subject.resources.splice(index, 1);
+                    App.save();
+                    SubjectDetail.renderResources();
+                    Subjects.render();
+                    Toaster.show('تم الحذف! 🗑️');
+                }
+            }
+        };
+
+        // ===== نظام المؤقت المحسّن =====
+        const Timer = {
+            mins: POMODORO_DURATION,
+            secs: 0,
+            intervalId: null,
+            isRunning: false,
+            selectedSubjectId: null,
+
+            toggle() {
+                if(this.isRunning) {
+                    clearInterval(this.intervalId);
+                    this.isRunning = false;
+                    document.getElementById('timerSubjectSelect').disabled = false;
+                    document.getElementById('timerActionBtn').textContent = "استئناف ⏸️";
+                } else {
+                    this.selectedSubjectId = document.getElementById('timerSubjectSelect').value;
+                    if (!this.selectedSubjectId) {
+                        Toaster.show('اختر مادة أولاً!', 'error');
+                        return;
+                    }
+                    this.isRunning = true;
+                    document.getElementById('timerSubjectSelect').disabled = true;
+                    document.getElementById('timerActionBtn').textContent = "إيقاف ⏹️";
+                    
+                    clearInterval(this.intervalId);
+                    this.intervalId = setInterval(() => {
+                        if(this.secs === 0) {
+                            if(this.mins === 0) {
+                                clearInterval(this.intervalId);
+                                this.completeSession();
+                                return;
+                            }
+                            this.mins--;
+                            this.secs = 59;
+                        } else {
+                            this.secs--;
+                        }
+                        document.getElementById('timerDisplay').textContent = `${this.mins}:${this.secs<10?'0'+this.secs:this.secs}`;
+                    }, 1000);
+                }
+            },
+
+            completeSession() {
+                const subject = App.data.subjects.find(s => s.id === this.selectedSubjectId);
+                
+                App.data.totalMinutesStudied += POMODORO_DURATION;
+                App.data.dailyStudyTime += POMODORO_DURATION;
+                App.data.completedSessions++;
+                if (subject) {
+                    subject.minutes = (subject.minutes || 0) + POMODORO_DURATION;
+                }
+
+                App.save();
+                
+                this.mins = POMODORO_DURATION;
+                this.secs = 0;
+                this.isRunning = false;
+                document.getElementById('timerSubjectSelect').disabled = false;
+                document.getElementById('timerActionBtn').textContent = "ابدأ الجلسة 🚀";
+                document.getElementById('sessionsCount').textContent = App.data.completedSessions;
+                
+                User.calculateGamification();
+                UI.updateDashboard();
+                Toaster.show("🏆 انتهت الجلسة! +25 دقيقة");
+            }
+        };
+
+        // ===== نظام الجدول الذكي =====
+        const AIPlanner = {
+            generate() {
+                const container = document.getElementById('aiScheduleContainer');
+                container.innerHTML = '';
+                
+                if(App.data.subjects.length === 0) {
+                    container.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted);">📚 أضف مواد أولاً</div>';
+                    return;
+                }
+
+                const now = new Date();
+                let currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+                const sorted = [...App.data.subjects].sort((a, b) => {
+                    const diffOrder = { hard: 0, medium: 1, easy: 2 };
+                    if (diffOrder[a.difficulty] !== diffOrder[b.difficulty]) {
+                        return diffOrder[a.difficulty] - diffOrder[b.difficulty];
+                    }
+                    return new Date(a.examDate || '2099') - new Date(b.examDate || '2099');
+                });
+
+                const fragment = document.createDocumentFragment();
+                sorted.forEach((sub, idx) => {
+                    const duration = { easy: 30, medium: 45, hard: 60 }[sub.difficulty] || 45;
+                    if (currentMinutes > 24 * 60) currentMinutes = 24 * 60;
+
+                    const startHour = Math.floor(currentMinutes / 60);
+                    const startMin = currentMinutes % 60;
+                    const endMinutes = Math.min(currentMinutes + duration, 24 * 60);
+                    const endHour = Math.floor(endMinutes / 60);
+                    const endMin = endMinutes % 60;
+
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    div.style.borderRight = '4px solid var(--accent-main)';
+                    div.innerHTML = `
+                        <div style="font-weight:700;">${idx + 1}. ${Subjects.sanitizeText(sub.name)}</div>
+                        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+                            ⏰ ${String(startHour).padStart(2,'0')}:${String(startMin).padStart(2,'0')} - ${String(endHour).padStart(2,'0')}:${String(endMin).padStart(2,'0')}
+                        </div>
+                    `;
+                    fragment.appendChild(div);
+                    currentMinutes = endMinutes;
+                });
+
+                container.appendChild(fragment);
+            }
+        };
+
+        // ===== نظام المستخدم =====
+        const User = {
+            init() {
+                const data = App.data;
+                document.getElementById('userGreetingTitle').textContent = data.student.name;
+                document.getElementById('headerAvatar').src = data.student.avatar || DEFAULT_AVATAR;
+                document.getElementById('profileCardAvatar').src = data.student.avatar || DEFAULT_AVATAR;
+                document.getElementById('profileCardName').textContent = data.student.name;
+                document.getElementById('profileCardStage').textContent = `${data.student.stage} - ${data.student.grade}`;
+                document.getElementById('settingNameInput').value = data.student.name;
+                document.getElementById('settingStageSelect').value = data.student.stage;
+                this.syncGradeOptions(data.student.stage);
+                document.getElementById('settingGradeSelect').value = data.student.grade;
+                this.calculateGamification();
+            },
+
+            calculateGamification() {
+                const data = App.data;
+                const taskBonus = data.tasks.filter(t => t.done).length * 15;
+                const studyBonus = data.totalMinutesStudied * 2;
+                data.xp = studyBonus + taskBonus;
+                data.level = Math.floor(data.xp / 100) + 1;
+                
+                const currentLvlXp = data.xp % 100;
+                
+                document.getElementById('headerLVL').textContent = `LVL ${data.level}`;
+                document.getElementById('headerStreak').textContent = `${data.streak} 🔥`;
+                document.getElementById('profileCardLevel').textContent = `Level ${data.level}`;
+                document.getElementById('profileCardXpText').textContent = `${currentLvlXp} / 100 XP`;
+                document.getElementById('profileCardXpFill').style.width = `${currentLvlXp}%`;
+            },
+
+            syncGradeOptions(stage) {
+                const select = document.getElementById('settingGradeSelect');
+                select.innerHTML = "";
+                const grades = {
+                    'ابتدائي': ['الرابع', 'الخامس', 'السادس'],
+                    'إعدادي': ['الأول', 'الثاني', 'الثالث'],
+                    'ثانوي': ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي'],
+                    'جامعة': ['السنة الأولى', 'السنة الثانية', 'السنة الثالثة', 'السنة الرابعة']
+                };
+                (grades[stage] || []).forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g;
+                    opt.textContent = g;
+                    select.appendChild(opt);
+                });
+            },
+
+            updateAvatar(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    App.data.student.avatar = reader.result;
+                    App.save();
+                    this.init();
+                    Toaster.show('تم تحديث الصورة! 📸');
+                };
+                reader.readAsDataURL(file);
+            },
+
+            save() {
+                App.data.student.name = document.getElementById('settingNameInput').value.trim();
+                App.data.student.stage = document.getElementById('settingStageSelect').value;
+                App.data.student.grade = document.getElementById('settingGradeSelect').value;
+                App.save();
+                this.init();
+                Toaster.show('تم حفظ البيانات! ✅');
+            }
+        };
+
+        // ===== نظام واجهة المستخدم =====
+        const UI = {
+            init() {
+                if (App.initialized) return;
+                App.initialized = true;
+
+                Theme.init();
+                User.init();
+                Subjects.render();
+                Tasks.render();
+                this.updateDashboard();
+                this.renderAchievements();
+            },
+
+            updateDashboard() {
+                const data = App.data;
+                const matrix = document.getElementById('profileStatsMatrix');
+                if (!matrix) return;
+                
+                const fragment = document.createDocumentFragment();
+                
+                const stats = [
+                    { label: 'ساعات اليوم', value: `${Math.floor(data.dailyStudyTime / 60)}h`, emoji: '⏱️' },
+                    { label: 'الإجمالي', value: `${Math.floor(data.totalMinutesStudied / 60)}h`, emoji: '📊' },
+                    { label: 'مهام', value: data.tasks.filter(t=>t.done).length, emoji: '✅' },
+                    { label: 'مواد', value: data.subjects.length, emoji: '📚' }
+                ];
+
+                stats.forEach(stat => {
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    div.style.margin = '0';
+                    div.innerHTML = `
+                        <div style="font-size: 12px; color: var(--text-muted);">${stat.emoji} ${stat.label}</div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--accent-main); margin-top: 8px;">${stat.value}</div>
+                    `;
+                    fragment.appendChild(div);
+                });
+
+                matrix.innerHTML = '';
+                matrix.appendChild(fragment);
+            },
+
+            renderAchievements() {
+                const data = App.data;
+                const container = document.getElementById('expandedBadgesContainer');
+                if (!container) return;
+
+                const badges = [
+                    { emoji: "🥇", name: "أول خطوة", condition: data.totalMinutesStudied > 0 },
+                    { emoji: "🚀", name: "عاشق الساعات", condition: data.totalMinutesStudied >= 600 },
+                    { emoji: "🏆", name: "مئة مهمة", condition: data.tasks.filter(t=>t.done).length >= 100 },
+                    { emoji: "🔥", name: "المثابر", condition: data.streak >= 7 },
+                    { emoji: "🎓", name: "مستكشف", condition: data.subjects.length >= 5 },
+                    { emoji: "💎", name: "Level 5", condition: data.level >= 5 },
+                    { emoji: "⚡", name: "سرعة", condition: data.totalMinutesStudied >= 1800 },
+                    { emoji: "🌟", name: "نجم", condition: data.completedSessions >= 30 }
+                ];
+
+                const fragment = document.createDocumentFragment();
+                badges.forEach(b => {
+                    const div = document.createElement('div');
+                    div.className = `badge-box ${b.condition?'unlocked':''}`;
+                    div.title = b.name;
+                    div.innerHTML = `<div style="font-size:24px;">${b.emoji}</div><span style="font-size:10px; display:block; margin-top:4px;">${b.name}</span>`;
+                    fragment.appendChild(div);
+                });
+
+                container.innerHTML = '';
+                container.appendChild(fragment);
+            }
+        };
+
+        // ===== التهيئة =====
+        document.addEventListener('DOMContentLoaded', () => {
+            App.init();
+            Theme.init();
+            Auth.check();
+            
+            document.getElementById('newTaskDueDate').valueAsDate = new Date();
+            document.getElementById('newSubjectExamDate').valueAsDate = new Date();
+        });
+
+        // دعم اختصارات لوحة المفاتيح
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-blur.active').forEach(m => {
+                    m.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
